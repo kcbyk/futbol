@@ -458,27 +458,29 @@ async function selectLeague(key, name, fdId, country) {
     currentLeagueName = name;
     currentRound = 1;
 
-    // Tab aktif yap
-    document.querySelectorAll('.ltab').forEach(t => t.classList.remove('active'));
-    if (window.event && window.event.target) {
-        window.event.target.classList.add('active');
-    }
+    // Tıklanan tab'ı bul ve active yap (event kontrolü hatayı önler)
+    try {
+        if (window.event && window.event.currentTarget) {
+            document.querySelectorAll('.ltab').forEach(t => t.classList.remove('active'));
+            window.event.currentTarget.classList.add('active');
+        }
+    } catch(e) {}
 
     document.getElementById('standingsTitle').innerHTML = `<i class="fas fa-table"></i> ${name} - Puan Durumu`;
     document.getElementById('seasonInfo').textContent = REAL_DATA[key]?.season || '2024/25 Sezonu';
 
-    // Tüm section'ları hemen yedek veri ile doldurarak takılmayı önle:
-    renderStandings(REAL_DATA[key]?.standings || [], key);
-    renderMatches(getStaticMatches(key));
-    loadTopScorers(key, fdId);
-    loadFeaturedPlayers();
+    try {
+        // Tüm section'ları hemen statik veri ile doldur
+        renderStandings(REAL_DATA[key]?.standings || [], key);
+        renderMatches(getStaticMatches(key));
+        await loadTopScorers(key, fdId);
+        await loadFeaturedPlayers();
+    } catch(e) {
+        console.warn('Statik yükleme hatası:', e);
+    }
 
     // Ardından API'den dener. Başarılı olursa tabloyu günceller.
-    try {
-        await fetchStandingsFromAPI(key, fdId);
-    } catch(err) {
-        console.warn('API Fetch Error:', err);
-    }
+    fetchStandingsFromAPI(key, fdId).catch(err => console.warn('API Fetch Error:', err));
 }
 
 // ===== API'DEN GÜNCELLE =====
@@ -914,7 +916,11 @@ function showSection(name) {
     document.querySelectorAll('.football-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
     document.getElementById('section-' + name).classList.add('active');
-    if (event && event.target) event.target.classList.add('active');
+    try {
+        if (window.event && window.event.currentTarget) {
+            window.event.currentTarget.classList.add('active');
+        }
+    } catch(e) {}
 }
 
 function showTeamDetail(teamName) {
