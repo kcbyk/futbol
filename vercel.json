@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "name": "haber-sitesi",
+  "routes": [
+    { "src": "/futbol", "dest": "/futbol.html" },
+    { "src": "/index", "dest": "/index.html" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
+}
