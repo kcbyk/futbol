@@ -3,68 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HaberMerkezi - Son Dakika Haberler 2026</title>
+    <title>HaberMerkezi - Futbol Ligi Merkezi</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="futbol.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
     <!-- Breaking News Bar -->
     <div class="breaking-news-bar">
-        <span class="breaking-label"><i class="fas fa-bolt"></i> SON DAKİKA</span>
+        <span class="breaking-label"><i class="fas fa-futbol"></i> FUTBOL</span>
         <div class="breaking-ticker">
-            <div class="ticker-content">
-                <span>Trump'ın gümrük tarifeleri küresel piyasaları sarstı &nbsp;•&nbsp; Papa Francis hayatını kaybetti, Vatikan yas içinde &nbsp;•&nbsp; Ukrayna-Rusya ateşkes müzakereleri başladı &nbsp;•&nbsp; Apple iOS 20 duyuruldu &nbsp;•&nbsp; TOGG yeni modelini Frankfurt'ta tanıttı &nbsp;•&nbsp; Galatasaray UEFA Konferans Ligi şampiyonu oldu &nbsp;•&nbsp;</span>
+            <div class="ticker-content" id="footballTicker">
+                <span>Canlı veriler yükleniyor... &nbsp;•&nbsp;</span>
             </div>
-        </div>
-    </div>
-
-    <!-- AI Chat Button - Sol Üst -->
-    <div class="ai-chat-launcher" id="aiChatLauncher">
-        <button class="ai-chat-btn" onclick="toggleAIChat()" title="AI Haber Asistanı">
-            <i class="fas fa-robot"></i>
-            <span class="ai-btn-text">AI Asistan</span>
-            <span class="ai-badge">YENİ</span>
-        </button>
-    </div>
-
-    <!-- AI Chat Panel -->
-    <div class="ai-chat-panel" id="aiChatPanel">
-        <div class="ai-chat-header">
-            <div class="ai-chat-title">
-                <div class="ai-avatar">
-                    <i class="fas fa-robot"></i>
-                    <span class="ai-online-dot"></span>
-                </div>
-                <div>
-                    <strong>HaberAI</strong>
-                    <small>Haber Asistanı • Çevrimiçi</small>
-                </div>
-            </div>
-            <div class="ai-chat-actions">
-                <button onclick="clearChat()" title="Sohbeti Temizle"><i class="fas fa-trash-alt"></i></button>
-                <button onclick="toggleAIChat()" title="Kapat"><i class="fas fa-times"></i></button>
-            </div>
-        </div>
-        <div class="ai-chat-messages" id="aiMessages">
-            <div class="ai-msg bot">
-                <div class="ai-msg-avatar"><i class="fas fa-robot"></i></div>
-                <div class="ai-msg-content">
-                    <p>Merhaba! 👋 Ben <strong>HaberAI</strong>, güncel haberleri takip eden yapay zeka asistanınızım.</p>
-                    <p>2026'daki gelişmeler hakkında sorular sorabilir, haber özetleri isteyebilirsiniz!</p>
-                    <div class="ai-quick-btns">
-                        <button onclick="quickQuestion('2026\'nın en önemli haberleri neler?')">📰 Öne Çıkan Haberler</button>
-                        <button onclick="quickQuestion('Dünyada bugün neler oldu?')">🌍 Dünya Gündemi</button>
-                        <button onclick="quickQuestion('Türkiye\'deki son gelişmeler neler?')">🇹🇷 Türkiye Gündemi</button>
-                        <button onclick="quickQuestion('Spor haberleri neler?')">⚽ Spor Haberleri</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ai-chat-input">
-            <input type="text" id="aiInput" placeholder="Bir haber sorun... (örn: Trump tarifeleri nedir?)" 
-                   onkeypress="if(event.key==='Enter') sendAIMessage()">
-            <button onclick="sendAIMessage()"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
 
@@ -73,277 +25,162 @@
         <div class="container">
             <div class="header-top">
                 <div class="logo">
-                    <i class="fas fa-newspaper"></i>
-                    <span>Haber<strong>Merkezi</strong></span>
+                    <a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;">
+                        <i class="fas fa-futbol"></i>
+                        <span>Futbol<strong>Merkezi</strong></span>
+                    </a>
                 </div>
-                <div class="date-time">
-                    <div id="current-date"></div>
-                    <div id="current-time"></div>
+                <div class="football-nav-tabs">
+                    <button class="ftab active" onclick="showSection('standings')"><i class="fas fa-table"></i> Puan Durumu</button>
+                    <button class="ftab" onclick="showSection('matches')"><i class="fas fa-calendar-alt"></i> Maçlar</button>
+                    <button class="ftab" onclick="showSection('players')"><i class="fas fa-user"></i> Oyuncular</button>
+                    <button class="ftab" onclick="showSection('scorers')"><i class="fas fa-bullseye"></i> Gol Krallığı</button>
+                    <button class="ftab" onclick="showSection('comments')"><i class="fas fa-microphone"></i> Uzman Yorumları</button>
                 </div>
-                <div class="search-box">
-                    <input type="text" placeholder="Haber ara..." id="searchInput">
-                    <button onclick="searchNews()"><i class="fas fa-search"></i></button>
+                <div class="api-indicator" id="apiIndicator">
+                    <i class="fas fa-sync fa-spin"></i> Yükleniyor
                 </div>
             </div>
         </div>
-
-        <!-- Navigation -->
-        <nav class="navbar">
-            <div class="container">
-                <button class="hamburger" id="hamburger" onclick="toggleMenu()">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <ul class="nav-menu" id="navMenu">
-                    <li><a href="#" class="active" onclick="filterCategory('all')"><i class="fas fa-home"></i> Ana Sayfa</a></li>
-                    <li><a href="#" onclick="filterCategory('gundem')"><i class="fas fa-fire"></i> Gündem</a></li>
-                    <li><a href="#" onclick="filterCategory('ekonomi')"><i class="fas fa-chart-line"></i> Ekonomi</a></li>
-                    <li><a href="#" onclick="filterCategory('spor')"><i class="fas fa-futbol"></i> Spor</a></li>
-                    <li><a href="#" onclick="filterCategory('teknoloji')"><i class="fas fa-microchip"></i> Teknoloji</a></li>
-                    <li><a href="#" onclick="filterCategory('saglik')"><i class="fas fa-heartbeat"></i> Sağlık</a></li>
-                    <li><a href="#" onclick="filterCategory('kultur')"><i class="fas fa-palette"></i> Kültür & Sanat</a></li>
-                    <li><a href="#" onclick="filterCategory('dunya')"><i class="fas fa-globe"></i> Dünya</a></li>
-                    <li><a href="futbol.html"><i class="fas fa-futbol"></i> Futbol</a></li>
-                </ul>
-            </div>
-        </nav>
     </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
+    <!-- League Selector -->
+    <div class="league-selector">
         <div class="container">
-            <div class="content-grid">
+            <div class="league-tabs" id="leagueTabs">
+                <button class="ltab active" onclick="selectLeague('tr1','Süper Lig',39,'tr')">🇹🇷 Süper Lig</button>
+                <button class="ltab" onclick="selectLeague('pl','Premier Lig',39,'gb')">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier Lig</button>
+                <button class="ltab" onclick="selectLeague('la','La Liga',140,'es')">🇪🇸 La Liga</button>
+                <button class="ltab" onclick="selectLeague('bl','Bundesliga',78,'de')">🇩🇪 Bundesliga</button>
+                <button class="ltab" onclick="selectLeague('sa','Serie A',135,'it')">🇮🇹 Serie A</button>
+                <button class="ltab" onclick="selectLeague('l1','Ligue 1',61,'fr')">🇫🇷 Ligue 1</button>
+                <button class="ltab" onclick="selectLeague('ucl','Şampiyonlar Ligi',2,'')">🏆 Şampiyonlar Ligi</button>
+            </div>
+        </div>
+    </div>
 
-                <!-- News Grid -->
-                <div class="news-section">
+    <!-- Main Content -->
+    <main class="football-main">
+        <div class="container">
 
-                    <!-- Hero News -->
-                    <div class="hero-news" id="heroNews">
-                        <div class="hero-card" onclick="openHeroModal()">
-                            <img src="https://picsum.photos/900/450?random=51" alt="Ana Haber">
-                            <div class="hero-overlay">
-                                <span class="category-badge dunya">Dünya</span>
-                                <h1>Trump'ın Küresel Gümrük Tarifeleri Dünya Ekonomisini Sarstı</h1>
-                                <p>ABD Başkanı Donald Trump, tüm ithalatlara yüzde 10 taban gümrük tarifesi uyguladığını açıkladı. Çin'e uygulanan tarife yüzde 145'e kadar yükseldi. Küresel borsalar sert düşüşlerle karşılık verdi...</p>
-                                <div class="hero-meta">
-                                    <span><i class="fas fa-user"></i> Dünya Haberleri</span>
-                                    <span><i class="fas fa-clock"></i> 3 Nisan 2026</span>
-                                    <span><i class="fas fa-eye"></i> 2.4M görüntülenme</span>
-                                </div>
-                            </div>
-                        </div>
+            <!-- STANDINGS SECTION -->
+            <section id="section-standings" class="football-section active">
+                <div class="section-title">
+                    <h2 id="standingsTitle"><i class="fas fa-table"></i> Süper Lig - Puan Durumu</h2>
+                    <div class="season-info" id="seasonInfo">2025/26 Sezonu</div>
+                </div>
+                <div class="standings-wrapper">
+                    <div class="standings-table-container">
+                        <table class="standings-table" id="standingsTable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Takım</th>
+                                    <th>O</th>
+                                    <th>G</th>
+                                    <th>B</th>
+                                    <th>M</th>
+                                    <th>AG</th>
+                                    <th>YG</th>
+                                    <th>A</th>
+                                    <th>P</th>
+                                    <th>Son 5</th>
+                                </tr>
+                            </thead>
+                            <tbody id="standingsBody">
+                                <tr><td colspan="11" class="loading-row"><i class="fas fa-spinner fa-spin"></i> Veriler yükleniyor...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
-
-                    <!-- Category Filter Title -->
-                    <div class="section-header">
-                        <h2 id="sectionTitle"><i class="fas fa-newspaper"></i> 2026 Güncel Haberler</h2>
-                        <div class="view-toggle">
-                            <button onclick="setView('grid')" id="gridBtn" class="active"><i class="fas fa-th"></i></button>
-                            <button onclick="setView('list')" id="listBtn"><i class="fas fa-list"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- News Cards -->
-                    <div class="news-grid" id="newsGrid"></div>
-
-                    <!-- Load More -->
-                    <div class="load-more">
-                        <button onclick="loadMore()" id="loadMoreBtn"><i class="fas fa-plus-circle"></i> Daha Fazla Haber</button>
+                    <div class="standings-legend">
+                        <div><span class="legend-dot cl"></span> Şampiyonlar Ligi</div>
+                        <div><span class="legend-dot uel"></span> Avrupa Ligi</div>
+                        <div><span class="legend-dot uecl"></span> Konferans Ligi</div>
+                        <div><span class="legend-dot rel"></span> Düşme Hattı</div>
                     </div>
                 </div>
+            </section>
 
-                <!-- Sidebar -->
-                <aside class="sidebar">
-
-                    <!-- Most Read -->
-                    <div class="widget">
-                        <div class="widget-header">
-                            <h3><i class="fas fa-fire-alt"></i> En Çok Okunanlar</h3>
-                        </div>
-                        <div class="most-read-list" id="mostRead"></div>
+            <!-- MATCHES SECTION -->
+            <section id="section-matches" class="football-section">
+                <div class="section-title">
+                    <h2><i class="fas fa-calendar-alt"></i> Fikstür & Sonuçlar</h2>
+                    <div class="round-selector">
+                        <button onclick="changeRound(-1)"><i class="fas fa-chevron-left"></i></button>
+                        <span id="currentRound">Hafta</span>
+                        <button onclick="changeRound(1)"><i class="fas fa-chevron-right"></i></button>
                     </div>
+                </div>
+                <div class="matches-grid" id="matchesGrid">
+                    <div class="loading-msg"><i class="fas fa-spinner fa-spin"></i> Maçlar yükleniyor...</div>
+                </div>
+            </section>
 
-                    <!-- Weather Widget -->
-                    <div class="widget weather-widget">
-                        <div class="widget-header">
-                            <h3><i class="fas fa-cloud-sun"></i> Hava Durumu</h3>
-                        </div>
-                        <div class="weather-content">
-                            <div class="weather-main">
-                                <i class="fas fa-cloud-sun weather-icon"></i>
-                                <div class="weather-temp">
-                                    <span class="temp">19°C</span>
-                                    <span class="city">İstanbul</span>
-                                </div>
-                            </div>
-                            <div class="weather-details">
-                                <div><i class="fas fa-tint"></i> Nem: %72</div>
-                                <div><i class="fas fa-wind"></i> Rüzgar: 18 km/s</div>
-                                <div><i class="fas fa-eye"></i> Görüş: 8 km</div>
-                            </div>
-                            <div class="weather-forecast">
-                                <div class="forecast-day"><span>Pts</span><i class="fas fa-cloud-rain"></i><span>16°</span></div>
-                                <div class="forecast-day"><span>Sal</span><i class="fas fa-cloud"></i><span>18°</span></div>
-                                <div class="forecast-day"><span>Çar</span><i class="fas fa-sun"></i><span>23°</span></div>
-                                <div class="forecast-day"><span>Per</span><i class="fas fa-sun"></i><span>25°</span></div>
-                                <div class="forecast-day"><span>Cum</span><i class="fas fa-cloud-sun"></i><span>21°</span></div>
-                            </div>
-                        </div>
+            <!-- PLAYERS SECTION -->
+            <section id="section-players" class="football-section">
+                <div class="section-title">
+                    <h2><i class="fas fa-user"></i> Oyuncu Profilleri</h2>
+                    <div class="player-search-box">
+                        <input type="text" id="playerSearch" placeholder="Oyuncu ara... (Salah, Messi, Ronaldo...)" onkeypress="if(event.key==='Enter')searchPlayer()">
+                        <button onclick="searchPlayer()"><i class="fas fa-search"></i></button>
                     </div>
+                </div>
+                <div class="featured-players" id="featuredPlayers">
+                    <div class="loading-msg"><i class="fas fa-spinner fa-spin"></i> Oyuncular yükleniyor...</div>
+                </div>
+                <div class="player-profile-modal" id="playerProfileModal" style="display:none">
+                    <div class="player-profile-card" id="playerProfileCard"></div>
+                </div>
+            </section>
 
-                    <!-- Exchange Rates -->
-                    <div class="widget">
-                        <div class="widget-header">
-                            <h3><i class="fas fa-dollar-sign"></i> Döviz Kurları</h3>
-                        </div>
-                        <div class="exchange-rates" id="exchangeRates">
-                            <div class="rate-item">
-                                <span class="currency"><img src="https://flagcdn.com/us.svg" width="20"> USD</span>
-                                <span class="rate">38.72</span>
-                                <span class="change up"><i class="fas fa-arrow-up"></i> +0.58%</span>
-                            </div>
-                            <div class="rate-item">
-                                <span class="currency"><img src="https://flagcdn.com/eu.svg" width="20"> EUR</span>
-                                <span class="rate">42.15</span>
-                                <span class="change down"><i class="fas fa-arrow-down"></i> -0.31%</span>
-                            </div>
-                            <div class="rate-item">
-                                <span class="currency"><img src="https://flagcdn.com/gb.svg" width="20"> GBP</span>
-                                <span class="rate">49.83</span>
-                                <span class="change up"><i class="fas fa-arrow-up"></i> +0.22%</span>
-                            </div>
-                            <div class="rate-item">
-                                <span class="currency">🥇 ALTIN</span>
-                                <span class="rate">4,320 ₺</span>
-                                <span class="change up"><i class="fas fa-arrow-up"></i> +2.1%</span>
-                            </div>
-                        </div>
-                    </div>
+            <!-- SCORERS SECTION -->
+            <section id="section-scorers" class="football-section">
+                <div class="section-title">
+                    <h2><i class="fas fa-bullseye"></i> Gol Krallığı & İstatistikler</h2>
+                </div>
+                <div class="scorers-grid" id="scorersGrid">
+                    <div class="loading-msg"><i class="fas fa-spinner fa-spin"></i> İstatistikler yükleniyor...</div>
+                </div>
+            </section>
 
-                    <!-- Tags -->
-                    <div class="widget">
-                        <div class="widget-header">
-                            <h3><i class="fas fa-tags"></i> Popüler Etiketler</h3>
-                        </div>
-                        <div class="tags-cloud">
-                            <a href="#" class="tag" onclick="filterTag('Trump')">Trump</a>
-                            <a href="#" class="tag" onclick="filterTag('Yapay Zeka')">Yapay Zeka</a>
-                            <a href="#" class="tag" onclick="filterTag('Ukrayna')">Ukrayna</a>
-                            <a href="#" class="tag" onclick="filterTag('Ekonomi')">Ekonomi</a>
-                            <a href="#" class="tag" onclick="filterTag('Spor')">Spor</a>
-                            <a href="#" class="tag" onclick="filterTag('TOGG')">TOGG</a>
-                            <a href="#" class="tag" onclick="filterTag('Papa')">Papa Francis</a>
-                            <a href="#" class="tag" onclick="filterTag('Galatasaray')">Galatasaray</a>
-                            <a href="#" class="tag" onclick="filterTag('Uzay')">Uzay</a>
-                            <a href="#" class="tag" onclick="filterTag('İklim')">İklim</a>
-                        </div>
-                    </div>
+            <!-- COMMENTS SECTION -->
+            <section id="section-comments" class="football-section">
+                <div class="section-title">
+                    <h2><i class="fas fa-microphone"></i> Uzman & Efsane Yorumları</h2>
+                </div>
+                <div class="comments-grid" id="commentsGrid">
+                    <!-- Static expert comments -->
+                </div>
+            </section>
 
-                    <!-- Social Media -->
-                    <div class="widget social-widget">
-                        <div class="widget-header">
-                            <h3><i class="fas fa-share-alt"></i> Sosyal Medya</h3>
-                        </div>
-                        <div class="social-buttons">
-                            <a href="#" class="social-btn twitter"><i class="fab fa-twitter"></i> Twitter'da Takip Et <span>62.4K</span></a>
-                            <a href="#" class="social-btn facebook"><i class="fab fa-facebook"></i> Facebook'ta Beğen <span>148K</span></a>
-                            <a href="#" class="social-btn instagram"><i class="fab fa-instagram"></i> Instagram'da Takip Et <span>91.3K</span></a>
-                            <a href="#" class="social-btn youtube"><i class="fab fa-youtube"></i> YouTube'a Abone Ol <span>55.7K</span></a>
-                        </div>
-                    </div>
-
-                    <!-- Newsletter -->
-                    <div class="widget newsletter-widget">
-                        <div class="widget-header">
-                            <h3><i class="fas fa-envelope"></i> Bülten Aboneliği</h3>
-                        </div>
-                        <p>Günlük haberleri e-posta ile alın!</p>
-                        <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
-                            <input type="email" placeholder="E-posta adresiniz">
-                            <button type="submit"><i class="fas fa-paper-plane"></i> Abone Ol</button>
-                        </form>
-                    </div>
-                </aside>
-            </div>
         </div>
     </main>
 
-    <!-- News Modal -->
-    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
-        <div class="modal" id="newsModal" onclick="event.stopPropagation()">
-            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
-            <div class="modal-content" id="modalContent"></div>
+    <!-- Player Modal -->
+    <div class="player-modal-overlay" id="playerModalOverlay" onclick="closePlayerModal()">
+        <div class="player-modal" id="playerModal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closePlayerModal()"><i class="fas fa-times"></i></button>
+            <div id="playerModalContent"></div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" style="margin-top:40px;">
         <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <div class="footer-logo">
-                        <i class="fas fa-newspaper"></i>
-                        <span>Haber<strong>Merkezi</strong></span>
-                    </div>
-                    <p>Türkiye'nin en güvenilir haber kaynağı. Doğru, tarafsız ve hızlı habercilik anlayışıyla sizlere ulaşıyoruz.</p>
-                    <div class="footer-social">
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-col">
-                    <h4>Kategoriler</h4>
-                    <ul>
-                        <li><a href="#">Gündem</a></li>
-                        <li><a href="#">Ekonomi</a></li>
-                        <li><a href="#">Spor</a></li>
-                        <li><a href="#">Teknoloji</a></li>
-                        <li><a href="#">Sağlık</a></li>
-                        <li><a href="#">Dünya</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Kurumsal</h4>
-                    <ul>
-                        <li><a href="#">Hakkımızda</a></li>
-                        <li><a href="#">İletişim</a></li>
-                        <li><a href="#">Reklam</a></li>
-                        <li><a href="#">Kariyer</a></li>
-                        <li><a href="#">Gizlilik Politikası</a></li>
-                        <li><a href="#">Kullanım Şartları</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>İletişim</h4>
-                    <div class="contact-info">
-                        <p><i class="fas fa-map-marker-alt"></i> İstanbul, Türkiye</p>
-                        <p><i class="fas fa-phone"></i> +90 212 000 00 00</p>
-                        <p><i class="fas fa-envelope"></i> info@habermerkezi.com</p>
-                    </div>
-                    <div class="app-badges">
-                        <a href="#" class="app-btn"><i class="fab fa-apple"></i> App Store</a>
-                        <a href="#" class="app-btn"><i class="fab fa-google-play"></i> Google Play</a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 HaberMerkezi. Tüm hakları saklıdır.</p>
-                <p>Tasarım & Geliştirme ile ❤️ yapıldı</p>
+            <div class="footer-bottom" style="text-align:center;padding:20px 0;">
+                <p style="color:rgba(255,255,255,0.5);font-size:13px;">
+                    Veriler: <a href="https://www.football-data.org" target="_blank" style="color:#a855f7;">football-data.org</a> &
+                    <a href="https://rapidapi.com/api-sports/api/api-football" target="_blank" style="color:#a855f7;">API-Football</a> •
+                    &copy; 2026 FutbolMerkezi
+                </p>
             </div>
         </div>
     </footer>
 
-    <!-- Scroll to Top -->
-    <button class="scroll-top" id="scrollTop" onclick="scrollToTop()">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <!-- Dark Mode Toggle -->
     <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()">
         <i class="fas fa-moon"></i>
     </button>
 
-    <script src="script.js"></script>
+    <script src="futbol.js"></script>
 </body>
 </html>
